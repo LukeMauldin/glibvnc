@@ -4,12 +4,17 @@ package libvncserver
  #include <rfb/rfb.h>
  #cgo CFLAGS: -I/usr/local/include
  #cgo LDFLAGS: -L/usr/local/lib -lvncserver
+ extern void setRfbLog();
 */
 import "C"
 
 import (
+	"io"
 	"unsafe"
 )
+
+var RfbInfoLogger io.Writer
+var RfbErrLogger io.Writer
 
 type GoRfbServer struct {
 	rfbServer   C.rfbScreenInfoPtr
@@ -119,4 +124,20 @@ func (f *GoRfbServer) IsActive() (ret bool) {
 	_ret := C.rfbIsActive(f.rfbServer)
 	ret = toGoBool(_ret)
 	return
+}
+
+//export notifyLogInfo
+func notifyLogInfo(str *C.char, n C.int) {
+	if RfbInfoLogger != nil {
+		goStr := C.GoBytes(unsafe.Pointer(str), n)
+		RfbInfoLogger.Write(goStr)
+	}
+}
+
+//export notifyLogErr
+func notifyLogErr(str *C.char, n C.int) {
+	if RfbErrLogger != nil {
+		goStr := C.GoBytes(unsafe.Pointer(str), n)
+		RfbErrLogger.Write(goStr)
+	}
 }
