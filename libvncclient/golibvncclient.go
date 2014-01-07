@@ -2,8 +2,7 @@ package libvncclient
 
 /*
  #include <rfb/rfbclient.h>
- #cgo CFLAGS: -I/usr/local/include
- #cgo LDFLAGS: -L/usr/local/lib -lvncclient
+ #cgo pkg-config: libvncclient
  extern void setMallocFrameBufferProc(rfbClient *client);
  extern void setGotFrameBufferUpdate(rfbClient *client);
 */
