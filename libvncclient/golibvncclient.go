@@ -86,12 +86,6 @@ func (f *GoRfbClient) InitClient(argc int, argv *int8) (ret bool) {
 	return
 }
 
-func (f *GoRfbClient) RfbInitConnection() (ret bool) {
-	_ret := C.rfbInitConnection(f.rfbClient)
-	ret = toGoBool(_ret)
-	return
-}
-
 func (f *GoRfbClient) WaitForMessage(usecs int) (ret int) {
 	_usecs := C.uint(usecs)
 	_ret := C.WaitForMessage(f.rfbClient, _usecs)
