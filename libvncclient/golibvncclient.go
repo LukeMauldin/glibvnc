@@ -6,13 +6,22 @@ package libvncclient
  #cgo LDFLAGS: -L/usr/local/lib -lvncclient
  extern void setMallocFrameBufferProc(rfbClient *client);
  extern void setGotFrameBufferUpdate(rfbClient *client);
+ extern void setRfbLog();
 */
 import "C"
 
 import (
+	"io"
 	"sync"
 	"unsafe"
 )
+
+var RfbInfoLogger io.Writer
+var RfbErrLogger io.Writer
+
+func init() {
+	C.setRfbLog()
+}
 
 //Bool conversion - copied from libvncserver so user would not need to include both packages
 func toGoBool(b C.rfbBool) bool {
@@ -207,4 +216,20 @@ func onSourceClientUpdate(client *C.rfbClient, x, y, w, h int) {
 	storedData := C.rfbClientGetClientData(client, unsafe.Pointer(&rfbCallbackTag))
 	callback := getRfbCallback(uintptr(storedData))
 	callback.OnUpdate(x, y, w, h)
+}
+
+//export notifyLogInfo
+func notifyLogInfo(str *C.char, n C.int) {
+	if RfbInfoLogger != nil {
+		goStr := C.GoStringN(str, n)
+		RfbInfoLogger.Write([]byte(goStr))
+	}
+}
+
+//export notifyLogErr
+func notifyLogErr(str *C.char, n C.int) {
+	if RfbErrLogger != nil {
+		goStr := C.GoStringN(str, n)
+		RfbErrLogger.Write([]byte(goStr))
+	}
 }
