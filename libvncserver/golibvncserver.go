@@ -16,6 +16,10 @@ import (
 var RfbInfoLogger io.Writer
 var RfbErrLogger io.Writer
 
+func init() {
+	C.setRfbLog()
+}
+
 type GoRfbServer struct {
 	rfbServer   C.rfbScreenInfoPtr
 	frameBuffer []uint8
@@ -129,15 +133,15 @@ func (f *GoRfbServer) IsActive() (ret bool) {
 //export notifyLogInfo
 func notifyLogInfo(str *C.char, n C.int) {
 	if RfbInfoLogger != nil {
-		goStr := C.GoBytes(unsafe.Pointer(str), n)
-		RfbInfoLogger.Write(goStr)
+		goStr := C.GoStringN(str, n)
+		RfbInfoLogger.Write([]byte(goStr))
 	}
 }
 
 //export notifyLogErr
 func notifyLogErr(str *C.char, n C.int) {
 	if RfbErrLogger != nil {
-		goStr := C.GoBytes(unsafe.Pointer(str), n)
-		RfbErrLogger.Write(goStr)
+		goStr := C.GoStringN(str, n)
+		RfbErrLogger.Write([]byte(goStr))
 	}
 }
