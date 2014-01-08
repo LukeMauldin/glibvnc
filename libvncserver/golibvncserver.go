@@ -2,8 +2,7 @@ package libvncserver
 
 /*
  #include <rfb/rfb.h>
- #cgo CFLAGS: -I/usr/local/include
- #cgo LDFLAGS: -L/usr/local/lib -lvncserver
+ #cgo pkg-config: libvncserver
  extern void setServerRfbLog();
 */
 import "C"

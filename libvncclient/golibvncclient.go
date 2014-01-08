@@ -2,8 +2,7 @@ package libvncclient
 
 /*
  #include <rfb/rfbclient.h>
- #cgo CFLAGS: -I/usr/local/include
- #cgo LDFLAGS: -L/usr/local/lib -lvncclient
+ #cgo pkg-config: libvncclient
  extern void setMallocFrameBufferProc(rfbClient *client);
  extern void setGotFrameBufferUpdate(rfbClient *client);
  extern void setClientRfbLog();
@@ -92,12 +91,6 @@ func (f *GoRfbClient) InitClient(argc int, argv *int8) (ret bool) {
 		_argv = (**C.char)(unsafe.Pointer(&argv))
 	}
 	_ret := C.rfbInitClient(f.rfbClient, _argc, _argv)
-	ret = toGoBool(_ret)
-	return
-}
-
-func (f *GoRfbClient) RfbInitConnection() (ret bool) {
-	_ret := C.rfbInitConnection(f.rfbClient)
 	ret = toGoBool(_ret)
 	return
 }
