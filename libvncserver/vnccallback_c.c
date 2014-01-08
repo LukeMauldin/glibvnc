@@ -3,27 +3,27 @@
 #include <stdarg.h>
 #include "_cgo_export.h"
 
-void rfbLogInfoToString(const char *format, ...) {
+void rfbServerLogInfoToString(const char *format, ...) {
 	int bufferSize = 4096;
 	char buffer[bufferSize];
 	va_list argptr;
     va_start(argptr, format);
     int n = vsnprintf(buffer, bufferSize, format, argptr);
     va_end(argptr);
-    notifyLogInfo(buffer, n);
+    notifyServerLogInfo(buffer, n);
 }
 
-void rfbLogErrToString(const char *format, ...) {
+void rfbServerLogErrToString(const char *format, ...) {
 	int bufferSize = 4096;
 	char buffer[bufferSize];
 	va_list argptr;
     va_start(argptr, format);
     int n = vsnprintf(buffer, bufferSize, format, argptr);
     va_end(argptr);
-    notifyLogErr(buffer, n);
+    notifyServerLogErr(buffer, n);
 }
 
-void setRfbLog() {
-	rfbLog = rfbLogInfoToString;
-	rfbErr = rfbLogErrToString;
+void setServerRfbLog() {
+	rfbLog = rfbServerLogInfoToString;
+	rfbErr = rfbServerLogErrToString;
 }

@@ -4,7 +4,7 @@ package libvncserver
  #include <rfb/rfb.h>
  #cgo CFLAGS: -I/usr/local/include
  #cgo LDFLAGS: -L/usr/local/lib -lvncserver
- extern void setRfbLog();
+ extern void setServerRfbLog();
 */
 import "C"
 
@@ -17,7 +17,7 @@ var RfbInfoLogger io.Writer
 var RfbErrLogger io.Writer
 
 func init() {
-	C.setRfbLog()
+	C.setServerRfbLog()
 }
 
 type GoRfbServer struct {
@@ -130,16 +130,16 @@ func (f *GoRfbServer) IsActive() (ret bool) {
 	return
 }
 
-//export notifyLogInfo
-func notifyLogInfo(str *C.char, n C.int) {
+//export notifyServerLogInfo
+func notifyServerLogInfo(str *C.char, n C.int) {
 	if RfbInfoLogger != nil {
 		goStr := C.GoStringN(str, n)
 		RfbInfoLogger.Write([]byte(goStr))
 	}
 }
 
-//export notifyLogErr
-func notifyLogErr(str *C.char, n C.int) {
+//export notifyServerLogErr
+func notifyServerLogErr(str *C.char, n C.int) {
 	if RfbErrLogger != nil {
 		goStr := C.GoStringN(str, n)
 		RfbErrLogger.Write([]byte(goStr))
